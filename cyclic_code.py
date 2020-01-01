@@ -1,6 +1,7 @@
 import sys
 from sympy import Poly, SympifyError, PolynomialError
 from sympy.abc import x
+import numpy as np
 from typing import List, Tuple
 
 
@@ -101,6 +102,21 @@ def divide_mod_2(a: List[int], b: List[int]) -> Tuple[List[int], List[int]]:
         del a[0]
 
     return (res, a)
+
+
+def create_generator_matrix(n: int, k: int, g: List[int]):
+    g = np.array(g, dtype=int)
+    m = np.zeros((k, n), dtype=int)
+
+    for i in range(0, k):
+        m[i, i:i+n-k+1] = g
+
+    for i in range(0, k-1):
+        for j in range(i+1, k):
+            if m[i, j]:
+                np.bitwise_xor(m[i, :], m[j, :], out=m[i, :])
+
+    return m
 
 
 if __name__ == "__main__":
