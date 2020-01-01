@@ -38,8 +38,8 @@ class CyclicUtil:
         parity[:, :self.k] = self.g_mat[:, self.k:].transpose()
         return parity
 
-    def calculate_parity_check_poly(self):
-        return Poly(divide_mod_2(create_x_n_1(self.n), self.g)[0], x).as_expr()
+    def calculate_parity_check_poly(self) -> str:
+        return str(Poly(divide_mod_2(create_x_n_1(self.n), self.g)[0], x).as_expr())
 
     def encode(self, d: List[int]) -> str:
         return "".join([str(i) for i in np.array(d, dtype=int).dot(self.g_mat) % 2])
@@ -61,13 +61,15 @@ def main_unsafe():
 
     cyclic = CyclicUtil(n, k, g)
 
+    print("\nG: ")
     print(cyclic.g_mat)
+    print("\nH: ")
     print(cyclic.h_mat)
-    print(cyclic.h)
+    print(f"\nh(x) = {cyclic.h}\n")
 
     d = load_message(k)
     c = cyclic.encode(d)
-    print(c)
+    print(f"c = {c}")
 
 
 def load_number_from_inclusive_range(name: str, lower: int, upper: int) -> int:
