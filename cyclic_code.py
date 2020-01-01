@@ -84,7 +84,7 @@ def load_poly_coeffs(n: int, k: int) -> List[int]:
             print("Invalid polynomial format")
 
 
-def load_message(min_len: int) -> List[int]:
+def load_message(length: int) -> List[int]:
     while True:
         print("d = ", end="")
 
@@ -98,10 +98,10 @@ def load_message(min_len: int) -> List[int]:
                 else:
                     raise ValueError
 
-            if len(d) < min_len:
-                print(f"Message length must be at least {min_len}")
+            if len(d) < length:
+                print(f"Message length must be at least {length}")
             else:
-                return d
+                return d[:length]
 
         except ValueError:
             print("Only characters '0' and '1' are allowed")
