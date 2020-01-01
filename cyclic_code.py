@@ -22,6 +22,13 @@ def main_unsafe():
     n = load_number_from_inclusive_range("n", 1, 0)
     k = load_number_from_inclusive_range("k", 1, n - 1)
     g = load_poly_coeffs(n, k)
+    g_mat = create_generator_matrix(n, k, g)
+    h_mat = create_parity_check_matrix(n, k, g_mat)
+    h = calculate_parity_check_poly(n, g)
+
+    print(g_mat)
+    print(h_mat)
+    print(h)
 
 
 def load_number_from_inclusive_range(name: str, lower: int, upper: int) -> int:
@@ -123,6 +130,10 @@ def create_parity_check_matrix(n: int, k: int, generator_matrix):
     parity = np.eye(n-k, n, k=k, dtype=int)
     parity[:, :k] = generator_matrix[:, k:].transpose()
     return parity
+
+
+def calculate_parity_check_poly(n: int, g: List[int]):
+    return Poly(divide_mod_2(create_x_n_1(n), g)[0], x).as_expr()
 
 
 if __name__ == "__main__":
