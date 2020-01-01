@@ -9,6 +9,42 @@ class BadPolyError(Exception):
     pass
 
 
+class CyclicUtil:
+
+    def __init__(self, n, k, g):
+        self.n = n
+        self.k = k
+        self.g = g
+        self.h = self.calculate_parity_check_poly()
+        self.g_mat = self.create_generator_matrix()
+        self.h_mat = self.create_parity_check_matrix()
+
+    def create_generator_matrix(self):
+        g_ = np.array(self.g, dtype=int)
+        m = np.zeros((self.k, self.n), dtype=int)
+
+        for i in range(0, self.k):
+            m[i, i:i + self.n - self.k + 1] = g_
+
+        for i in range(0, self.k - 1):
+            for j in range(i+1, self.k):
+                if m[i, j]:
+                    np.bitwise_xor(m[i, :], m[j, :], out=m[i, :])
+
+        return m
+
+    def create_parity_check_matrix(self):
+        parity = np.eye(self.n - self.k, self.n, k=self.k, dtype=int)
+        parity[:, :self.k] = self.g_mat[:, self.k:].transpose()
+        return parity
+
+    def calculate_parity_check_poly(self):
+        return Poly(divide_mod_2(create_x_n_1(self.n), self.g)[0], x).as_expr()
+
+    def encode(self, d: List[int]) -> str:
+        return "".join([str(i) for i in np.array(d, dtype=int).dot(self.g_mat) % 2])
+
+
 def main():
     try:
         main_unsafe()
@@ -23,16 +59,15 @@ def main_unsafe():
     k = load_number_from_inclusive_range("k", 1, n - 1)
     g = load_poly_coeffs(n, k)
 
-    g_mat = create_generator_matrix(n, k, g)
-    h_mat = create_parity_check_matrix(n, k, g_mat)
-    h = calculate_parity_check_poly(n, g)
+    cyclic = CyclicUtil(n, k, g)
 
-    print(g_mat)
-    print(h_mat)
-    print(h)
+    print(cyclic.g_mat)
+    print(cyclic.h_mat)
+    print(cyclic.h)
 
     d = load_message(k)
-    c = encode(d, g_mat)
+    c = cyclic.encode(d)
+    print(c)
 
 
 def load_number_from_inclusive_range(name: str, lower: int, upper: int) -> int:
@@ -136,35 +171,6 @@ def divide_mod_2(a: List[int], b: List[int]) -> Tuple[List[int], List[int]]:
         del a[0]
 
     return (res, a)
-
-
-def create_generator_matrix(n: int, k: int, g: List[int]):
-    g = np.array(g, dtype=int)
-    m = np.zeros((k, n), dtype=int)
-
-    for i in range(0, k):
-        m[i, i:i+n-k+1] = g
-
-    for i in range(0, k-1):
-        for j in range(i+1, k):
-            if m[i, j]:
-                np.bitwise_xor(m[i, :], m[j, :], out=m[i, :])
-
-    return m
-
-
-def create_parity_check_matrix(n: int, k: int, generator_matrix):
-    parity = np.eye(n-k, n, k=k, dtype=int)
-    parity[:, :k] = generator_matrix[:, k:].transpose()
-    return parity
-
-
-def calculate_parity_check_poly(n: int, g: List[int]):
-    return Poly(divide_mod_2(create_x_n_1(n), g)[0], x).as_expr()
-
-
-def encode(d: List[int], generator_matrix) -> str:
-    return "".join([str(i) for i in np.array(d, dtype=int).dot(generator_matrix) % 2])
 
 
 if __name__ == "__main__":
