@@ -4,6 +4,10 @@ from sympy.abc import x
 from typing import List, Tuple
 
 
+class BadPolyError(Exception):
+    pass
+
+
 def main():
     try:
         main_unsafe()
@@ -47,28 +51,28 @@ def load_poly_coeffs(n: int, k: int) -> List[int]:
             p = Poly(input(), x)
 
             if str(p.get_domain()) != "ZZ" or len(p.degree_list()) != 1:
-                raise ValueError("Too many variables")
+                raise BadPolyError("Too many variables")
 
             coeffs = [int(i) for i in p.all_coeffs()]
             if len(coeffs) != (degree + 1):
-                raise ValueError(
+                raise BadPolyError(
                     f"Degree of polynomial must be exactly {degree}")
 
             for c in coeffs:
                 if (c != 0 and c != 1):
-                    raise ValueError("All coefficients must be 0 or 1")
+                    raise BadPolyError("All coefficients must be 0 or 1")
 
             if coeffs[-1] != 1:
-                raise ValueError("Trailing term must be 1")
+                raise BadPolyError("Trailing term must be 1")
 
             if divide_mod_2(create_x_n_1(n), coeffs)[1]:
-                raise ValueError("Polynomial must be a divisor of x^n - 1")
+                raise BadPolyError("Polynomial must be a divisor of x^n - 1")
 
             return coeffs
 
-        except ValueError as e:
+        except BadPolyError as e:
             print(e)
-        except (SyntaxError, SympifyError, PolynomialError):
+        except (ValueError, SyntaxError, SympifyError, PolynomialError):
             print("Invalid polynomial format")
 
 
