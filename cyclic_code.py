@@ -119,5 +119,11 @@ def create_generator_matrix(n: int, k: int, g: List[int]):
     return m
 
 
+def create_parity_check_matrix(n: int, k: int, generator_matrix):
+    parity = np.eye(n-k, n, k=k, dtype=int)
+    parity[:, :k] = generator_matrix[:, k:].transpose()
+    return parity
+
+
 if __name__ == "__main__":
     main()
