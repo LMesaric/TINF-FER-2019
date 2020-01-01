@@ -83,7 +83,7 @@ def create_x_n_1(n: int) -> List[int]:
     return x_n_1
 
 
-def divide_mod_2(a: List[int], b: List[int]) -> Tuple[List[int]]:
+def divide_mod_2(a: List[int], b: List[int]) -> Tuple[List[int], List[int]]:
     res = []
 
     while len(b) <= len(a) and a:
