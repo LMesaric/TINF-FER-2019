@@ -19,7 +19,7 @@ class CyclicUtil:
         self.g_mat = self.create_generator_matrix()
         self.h_mat = self.create_parity_check_matrix()
 
-    def create_generator_matrix(self):
+    def create_generator_matrix(self) -> np.matrix:
         g_ = np.array(self.g, dtype=int)
         m = np.zeros((self.k, self.n), dtype=int)
 
@@ -33,7 +33,7 @@ class CyclicUtil:
 
         return m
 
-    def create_parity_check_matrix(self):
+    def create_parity_check_matrix(self) -> np.matrix:
         parity = np.eye(self.n - self.k, self.n, k=self.k, dtype=int)
         parity[:, :self.k] = self.g_mat[:, self.k:].transpose()
         return parity
