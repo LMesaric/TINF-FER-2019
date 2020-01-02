@@ -35,10 +35,37 @@ class CyclicUtil:
         return parity
 
     def calculate_parity_check_poly(self) -> str:
-        return str(Poly(divide_mod_2(create_x_n_1(self.n), self.g)[0], x).as_expr())
+        return str(Poly(CyclicUtil.divide_mod_2(CyclicUtil.create_x_n_1(self.n), self.g)[0], x).as_expr())
 
     def encode(self, d: List[int]) -> str:
         return "".join([str(i) for i in np.array(d, dtype=int).dot(self.g_mat) % 2])
+
+    @staticmethod
+    def create_x_n_1(n: int) -> List[int]:
+        x_n_1 = [0] * (n + 1)
+        x_n_1[0] = 1
+        x_n_1[-1] = 1
+        return x_n_1
+
+    @staticmethod
+    def divide_mod_2(a: List[int], b: List[int]) -> Tuple[List[int], List[int]]:
+        res = []
+
+        while len(b) <= len(a) and a:
+            if a[0] == 1:
+                del a[0]
+                for j in range(len(b) - 1):
+                    a[j] ^= b[j + 1]
+                if len(a) > 0:
+                    res.append(1)
+            else:
+                del a[0]
+                res.append(0)
+
+        while a and a[0] == 0:
+            del a[0]
+
+        return (res, a)
 
 
 def load_number_from_inclusive_range(name: str, lower: int, upper: int) -> int:
@@ -87,7 +114,7 @@ def load_poly_coeffs(n: int, k: int) -> List[int]:
             if coeffs[-1] != 1:
                 raise BadPolyError("Trailing term must be 1")
 
-            if divide_mod_2(create_x_n_1(n), coeffs)[1]:
+            if CyclicUtil.divide_mod_2(CyclicUtil.create_x_n_1(n), coeffs)[1]:
                 raise BadPolyError("Polynomial must be a divisor of x^n - 1")
 
             return coeffs
@@ -119,33 +146,6 @@ def load_message(length: int) -> List[int]:
 
         except ValueError:
             print("Only characters '0' and '1' are allowed")
-
-
-def create_x_n_1(n: int) -> List[int]:
-    x_n_1 = [0] * (n + 1)
-    x_n_1[0] = 1
-    x_n_1[-1] = 1
-    return x_n_1
-
-
-def divide_mod_2(a: List[int], b: List[int]) -> Tuple[List[int], List[int]]:
-    res = []
-
-    while len(b) <= len(a) and a:
-        if a[0] == 1:
-            del a[0]
-            for j in range(len(b) - 1):
-                a[j] ^= b[j + 1]
-            if len(a) > 0:
-                res.append(1)
-        else:
-            del a[0]
-            res.append(0)
-
-    while a and a[0] == 0:
-        del a[0]
-
-    return (res, a)
 
 
 def main_unsafe():
