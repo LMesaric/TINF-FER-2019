@@ -127,7 +127,7 @@ class CyclicUtil:
         return (res, a)
 
 
-def load_number_from_inclusive_range(name: str, lower: int, upper: int) -> int:
+def load_integer_from_inclusive_range(name: str, lower: int, upper: int) -> int:
     """Loads integer from range `[lower, upper]`.
 
     Repeats requests until user enters a correct number.
@@ -148,7 +148,7 @@ def load_number_from_inclusive_range(name: str, lower: int, upper: int) -> int:
         try:
             i = int(input())
         except ValueError:
-            print("Please enter a number")
+            print("Please enter an integer")
             continue
 
         if i < lower:
@@ -268,8 +268,8 @@ def main_unsafe():
     """
 
     # 0 < k < n
-    n = load_number_from_inclusive_range("n", 1, 0)
-    k = load_number_from_inclusive_range("k", 1, n - 1)
+    n = load_integer_from_inclusive_range("n", 1, 0)
+    k = load_integer_from_inclusive_range("k", 1, n - 1)
     g = load_poly_coeffs(n, k)
 
     cyclic = CyclicUtil(n, k, g)
