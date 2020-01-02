@@ -6,8 +6,21 @@ from typing import List, Tuple
 
 
 class CyclicUtil:
+    """Utility class for calculating `G`, `H` and `h(x)` from `n`, `k` and `g(x)`.
+
+    Enables encoding messages."""
 
     def __init__(self, n: int, k: int, g: List[int]) -> None:
+        """Creates a new instance of `CyclicUtil`.
+
+        Eagerly evaluates `G`, `H` and `h(x)`.
+
+        Args:
+            n (int): n
+            k (int): k
+            g (List[int]): g(x) as list representation
+        """
+
         self.n = n
         self.k = k
         self.g = g
@@ -16,6 +29,12 @@ class CyclicUtil:
         self.h = self.calculate_parity_check_poly()
 
     def create_generator_matrix(self) -> np.matrix:
+        """Generates and returns a `k × n` generator matrix `G`.
+
+        Returns:
+            np.matrix: generator matrix `G`
+        """
+
         g_ = np.array(self.g, dtype=int)
         m = np.zeros((self.k, self.n), dtype=int)
 
@@ -30,18 +49,48 @@ class CyclicUtil:
         return m
 
     def create_parity_check_matrix(self) -> np.matrix:
+        """Generates and returns a `(n-k) × n` parity-check matrix `H`.
+
+        Returns:
+            np.matrix: parity-check matrix `H`
+        """
+
         parity = np.eye(self.n - self.k, self.n, k=self.k, dtype=int)
         parity[:, :self.k] = self.g_mat[:, self.k:].transpose()
         return parity
 
     def calculate_parity_check_poly(self) -> str:
+        """Generates and returns a formatted string representation of the parity-check polynomial `h(x)`.
+
+        Returns:
+            str: parity-check polynomial
+        """
+
         return str(Poly(CyclicUtil.divide_mod_2(CyclicUtil.create_x_n_1(self.n), self.g)[0], x).as_expr())
 
     def encode(self, d: List[int]) -> str:
+        """Encodes message `d` using generator matrix `G`.
+
+        Args:
+            d (List[int]): message to encode, length `k`
+
+        Returns:
+            str: encoded message
+        """
+
         return "".join([str(i) for i in np.array(d, dtype=int).dot(self.g_mat) % 2])
 
     @staticmethod
     def create_x_n_1(n: int) -> List[int]:
+        """Creates a list representation of the `x^n - 1` polynomial.
+
+        Args:
+            n (int): degree of polynomial
+
+        Returns:
+            List[int]: `x^n - 1`
+        """
+
         x_n_1 = [0] * (n + 1)
         x_n_1[0] = 1
         x_n_1[-1] = 1
@@ -49,6 +98,16 @@ class CyclicUtil:
 
     @staticmethod
     def divide_mod_2(a: List[int], b: List[int]) -> Tuple[List[int], List[int]]:
+        """Calculates quotient and remainder when dividing polynomials `a` and `b` (mod 2).
+
+        Args:
+            a (List[int]): list representation of polynomial `a`
+            b (List[int]): list representation of polynomial `b`
+
+        Returns:
+            Tuple[List[int], List[int]]: list representations of the quotient and remainder
+        """
+
         res = []
 
         while len(b) <= len(a) and a:
@@ -69,6 +128,20 @@ class CyclicUtil:
 
 
 def load_number_from_inclusive_range(name: str, lower: int, upper: int) -> int:
+    """Loads integer from range `[lower, upper]`.
+
+    Repeats requests until user enters a correct number.
+    Uses range `[lower, inf)` if `upper < lower`.
+
+    Args:
+        name (str): name of parameter to load, used for prompts
+        lower (int): lower bound, inclusive
+        upper (int): upper bound, inclusive
+
+    Returns:
+        int: loaded integer
+    """
+
     while True:
         print(f"{name} = ", end="")
 
@@ -80,15 +153,34 @@ def load_number_from_inclusive_range(name: str, lower: int, upper: int) -> int:
 
         if i < lower:
             print(f"'{name}' must be greater than {lower - 1}")
-        elif upper > lower and i > upper:
+        elif upper >= lower and i > upper:
             print(f"'{name}' must be less than {upper + 1}")
         else:
             return i
 
 
 def load_poly_coeffs(n: int, k: int) -> List[int]:
+    """Loads list representation of generator polynomial.
+
+    Repeats requests until user enters a correct polynomial.
+
+    Conditions:
+     - polynomial must only be in variable x
+     - polynomial must be a factor of x^n - 1
+     - all coefficients must be either 0 or 1
+     - degree of polynomial must be exactly n-k
+     - trailing term must be 1
+
+    Args:
+        n (int): n
+        k (int): k
+
+    Returns:
+        List[int]: list representation of loaded generator polynomial
+    """
 
     class BadPolyError(Exception):
+        '''Custom error class for incorrect polynomial input.'''
         pass
 
     degree = n - k
@@ -126,6 +218,18 @@ def load_poly_coeffs(n: int, k: int) -> List[int]:
 
 
 def load_message(length: int) -> List[int]:
+    """Loads array of bits.
+
+    Repeats requests until user enters a message of length `length` or greater.
+    All entered characters must be `0` or `1`.
+
+    Args:
+        length (int): minimum length of message
+
+    Returns:
+        List[int]: list of first `length` loaded bits
+    """
+
     while True:
         print("d = ", end="")
 
@@ -149,6 +253,17 @@ def load_message(length: int) -> List[int]:
 
 
 def main_unsafe():
+    """Internal demonstration entry point which does not handle abrupt script termination.
+
+    Loads `n`, `k` and `g(x)`.
+    Prints `G`, `H` and `h(x)`.
+    Requires one message and outputs its encoded version.
+
+    Raises:
+        KeyboardInterrupt: when Ctrl+C is pressed
+        EOFError: when EOF is read from stdin
+    """
+
     # 0 < k < n
     n = load_number_from_inclusive_range("n", 1, 0)
     k = load_number_from_inclusive_range("k", 1, n - 1)
@@ -168,6 +283,7 @@ def main_unsafe():
 
 
 def main():
+    '''Demonstration entry point.'''
     try:
         main_unsafe()
     except (KeyboardInterrupt, EOFError):
