@@ -5,10 +5,6 @@ import numpy as np
 from typing import List, Tuple
 
 
-class BadPolyError(Exception):
-    pass
-
-
 class CyclicUtil:
 
     def __init__(self, n, k, g):
@@ -64,6 +60,10 @@ def load_number_from_inclusive_range(name: str, lower: int, upper: int) -> int:
 
 
 def load_poly_coeffs(n: int, k: int) -> List[int]:
+
+    class BadPolyError(Exception):
+        pass
+
     degree = n - k
 
     while True:
