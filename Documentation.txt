@@ -15,30 +15,32 @@ te simbolički zadanog generirajućeg polinoma (g(x)), računa i redom ispisuje:
 te potom, ponovno na temelju korisnički zadanog slijeda bitova ulazne poruke (d), ispisuje rezultirajuću kodnu riječ (c)
 nastalu odabranim cikličnim kodom.
 
-Nakon pokretanja skripte, program prvo zatraži upis vrijednosti za n ("n = "), a potom za k ("k = "), što korisnik ostvaruje upisom željenih nenegativnih brojeva iza znaka jednakosti 
+Nakon pokretanja skripte, program prvo zatraži upis vrijednosti za n ("n = "), a potom za k ("k = "), što korisnik ostvaruje upisom željenih pozitivnih brojeva iza znaka jednakosti 
 te pritiskom tipke enter.
-Ukoliko se za n ili k upišu cijeli brojevi manji od 0, program će ga upozoriti da je unos pogrešan ispisom rečenice "'n' must be greater than 0" ili "'k' must be greater than 0", 
-a ako se upiše decimalni broj, upozorit će ga ispisom rečenice "Please enter a number",te zatražiti ponovni upis. 
-Pri tome, n nužno mora biti veći ili jednak od k, pa u slučaju odnosa k<n program ispisuje "'k' must be less than [brojčana vrijednost od n]" te traži ponovni unos k.
+Ukoliko se za n ili k upišu cijeli brojevi manji ili jednaki 0, program će ga upozoriti da je unos pogrešan ispisom rečenice "'n' must be greater than 0" ili "'k' must be greater than 0", 
+a ako se upiše decimalni broj, upozorit će ga ispisom rečenice "Please enter an integer", te zatražiti ponovni upis. 
+Pri tome, n nužno mora biti veći od k, pa u slučaju odnosa k >= n program ispisuje "'k' must be less than [brojčana vrijednost od n]" te traži ponovni unos k.
 
-Ukoliko su n i k dobro uneseni, program ispisuje "g(x) = " čime simbolički unos generirajućeg polinoma iza ispisanog znaka jednakosti.
-Varijabla polinoma je "x", a potencije se mogu upisivati pomoću "**" ili pomoću "^", a množenje varijable koeficijentom obavlja se znakom "*". 
+Ukoliko su n i k dobro uneseni, program ispisuje "g(x) = " čime se traži unos generirajućeg polinoma u simboličkom obliku iza ispisanog znaka jednakosti.
+Varijabla polinoma je "x", a potencije se mogu upisivati pomoću "**" ili pomoću "^".
+Množenje varijable koeficijentom obavlja se znakom "*", pri čemu su primjerice izrazi "1*x^2" i "x^2" smatraju identičnima.
 Program i ovdje može javiti neke greške te zatražiti ponovni upis:
 1) ako se unesu koeficijenti različiti od 0 ili +1 ("All coefficients must be 0 or 1")
 2) ako se unese znak za varijablu različit od "x" ("Too many variables")
-3) ako se ne ispoštuje zadani format polinoma ili napravi pravopisna pogreška ("Invalid polynomial format")
+3) ako se ne poštuje zadani format polinoma ili napravi pravopisna pogreška ("Invalid polynomial format")
 4) ako je vodeći stupanj polinoma (najviša potencija varijable) različita od n-k ("Degree of polynomial must be exactly [brojčana vrijednost od n-k]")
-5) ako je najniži stupanj polinoma različit od 1, ili "1*x^0", ili 1*x**0 ("Trailing term must be 1")
-6) ako polinom ne dijeli (bez ostatka) polinom x**n-1 ("Polynomial must be a divisor of x^n - 1")
+5) ako je najniži stupanj polinoma različit od "+1", ili "1*x^0", ili 1*x**0 ("Trailing term must be 1")
+6) ako polinom ne dijeli (bez ostatka) polinom x^n - 1 ("Polynomial must be a divisor of x^n - 1")
 
-Ako je g(x) ispravno unesen, pritiskom tipke enter slijedi ispis matrice G i H u standardnim oblicima, te polinoma h(x), nakon čega ispisom retka "d = " program traži
-unos ulaznog slijeda od k bitova koji predstavljaju poruku. 
+Ako je g(x) ispravno unesen, pritiskom tipke enter slijedi ispis matrice G i H u standardnim oblicima, te polinoma h(x) u simboličkom obliku,
+nakon čega ispisom retka "d = " program traži unos ulaznog slijeda od minimalno k bitova koji predstavljaju poruku. 
 Ti bitovi unose se bez razmaka, a moguć je unos isključivo vrijednosti 0 i 1 (u suprotnom javlja se pogreška "Only characters '0' and '1' are allowed"). 
 Ako je uneseno manje od k bitova, program javlja pogrešku oblika
-"Message length must be at least [brojčana vrijednost od k]" - u oba slučaja traži se ponovan upis. Ukoliko se unese više od k bitova, preostale bitove poslije k-tog
-program zanemaruje te iza "c = " ispisuje slijed bitova koji tvore kodnu riječ, nakon čega se izvođenje prekida.
+"Message length must be at least [brojčana vrijednost od k]" - u oba slučaja traži se ponovan upis.
+Ukoliko se unese više od k bitova, preostale bitove poslije k-tog program zanemaruje.
+Iza "c = " ispisuje slijed bitova koji tvore kodnu riječ, nakon čega se izvođenje završava.
 
-Korisnik može i sam prekinuti program prije kraja, upisom ctrl+c, čime se prije prekida javlja poruka "Exiting the program."
+Korisnik može i sam prekinuti program prije kraja kombinacijom tipki Ctrl+C, čime se prije prekida javlja poruka "Exiting the program."
 
 Primjerice, ispravan unos i ispis mogu izgledati ovako (korisnički unosi označeni su pod dvostrukim navodnicima koji se inače unutar programa ne upisuju):
 
