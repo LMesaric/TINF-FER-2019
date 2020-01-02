@@ -7,7 +7,7 @@ from typing import List, Tuple
 
 class CyclicUtil:
 
-    def __init__(self, n, k, g):
+    def __init__(self, n: int, k: int, g: List[int]) -> None:
         self.n = n
         self.k = k
         self.g = g
