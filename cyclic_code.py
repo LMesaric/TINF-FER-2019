@@ -15,9 +15,9 @@ class CyclicUtil:
         self.n = n
         self.k = k
         self.g = g
-        self.h = self.calculate_parity_check_poly()
         self.g_mat = self.create_generator_matrix()
         self.h_mat = self.create_parity_check_matrix()
+        self.h = self.calculate_parity_check_poly()
 
     def create_generator_matrix(self) -> np.matrix:
         g_ = np.array(self.g, dtype=int)
@@ -43,33 +43,6 @@ class CyclicUtil:
 
     def encode(self, d: List[int]) -> str:
         return "".join([str(i) for i in np.array(d, dtype=int).dot(self.g_mat) % 2])
-
-
-def main():
-    try:
-        main_unsafe()
-    except (KeyboardInterrupt, EOFError):
-        print("\nExiting the program.")
-        sys.exit(0)
-
-
-def main_unsafe():
-    # 0 < k < n
-    n = load_number_from_inclusive_range("n", 1, 0)
-    k = load_number_from_inclusive_range("k", 1, n - 1)
-    g = load_poly_coeffs(n, k)
-
-    cyclic = CyclicUtil(n, k, g)
-
-    print("\nG: ")
-    print(cyclic.g_mat)
-    print("\nH: ")
-    print(cyclic.h_mat)
-    print(f"\nh(x) = {cyclic.h}\n")
-
-    d = load_message(k)
-    c = cyclic.encode(d)
-    print(f"c = {c}")
 
 
 def load_number_from_inclusive_range(name: str, lower: int, upper: int) -> int:
@@ -173,6 +146,33 @@ def divide_mod_2(a: List[int], b: List[int]) -> Tuple[List[int], List[int]]:
         del a[0]
 
     return (res, a)
+
+
+def main_unsafe():
+    # 0 < k < n
+    n = load_number_from_inclusive_range("n", 1, 0)
+    k = load_number_from_inclusive_range("k", 1, n - 1)
+    g = load_poly_coeffs(n, k)
+
+    cyclic = CyclicUtil(n, k, g)
+
+    print("\nG: ")
+    print(cyclic.g_mat)
+    print("\nH: ")
+    print(cyclic.h_mat)
+    print(f"\nh(x) = {cyclic.h}\n")
+
+    d = load_message(k)
+    c = cyclic.encode(d)
+    print(f"c = {c}")
+
+
+def main():
+    try:
+        main_unsafe()
+    except (KeyboardInterrupt, EOFError):
+        print("\nExiting the program.")
+        sys.exit(0)
 
 
 if __name__ == "__main__":
