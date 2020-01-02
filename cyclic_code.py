@@ -171,6 +171,9 @@ def load_poly_coeffs(n: int, k: int) -> List[int]:
      - degree of polynomial must be exactly n-k
      - trailing term must be 1
 
+    Monomials can be entered in any order.
+    Exponents can be marked with either `^` or `**`.
+
     Args:
         n (int): n
         k (int): k
